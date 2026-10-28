@@ -1,42 +1,52 @@
 # habitkeeper
 
-An accountability app for two friends who are losing weight together. It's meant to grow over time into an all-in-one tracker for fitness, eating habits, and motivation.
+An accountability app for friends who are losing weight together. It's meant to grow over time into an all-in-one tracker for fitness, eating habits, and motivation.
 
-## What's here
+Live at **https://smithbraden277.github.io/habitkeeper/**
 
-`tracker/index.html` is the source of **Weigh-In Partners**. It runs as a claude.ai Artifact, and the live page is at https://claude.ai/artifact/48VijcoQAAUQbywCG821Ge.
+## Features
 
-What it does today:
-
-- **Weekly check-ins:** weight, how the week went, notes, and an optional progress photo.
-- **Progress as % of starting body weight**, so partners of different sizes are measured on the same scale. Both partners share one chart, and there are milestone badges.
-- **Daily habit taps:** worked out, water, steps, ate on plan. Each partner has a daily streak.
+- **Accounts and teams.** Sign up with email. Create a team and send your partner an invite link, or join a team with a 6-letter code.
+- **Weekly check-ins** with weight, how the week went, notes, and an optional progress photo. Photos are private and only teammates can see them.
+- **Progress as % of starting body weight**, so partners of different sizes are on the same scale. There's a shared chart and milestone badges.
+- **Daily habit taps:** worked out, water, steps, ate on plan. Each person has a daily streak and a 7-day habit strip.
 - **Weekly commitments:** up to 3 promises a week, each marked "did it" or "missed", and visible to your partner.
-- **Streaks and cheers:** personal and team weekly streaks, plus emoji cheers and short notes on each other's check-ins.
-- **Coach's corner:** a weekly recap written by Claude, with a shout-out for each partner.
+- **Streaks and cheers:** personal and team weekly streaks, plus emoji cheers and encouragement notes on check-ins.
+- **Installable:** on your phone, use "Add to Home Screen" and it opens like an app.
 
-## How it runs
+## Stack
 
-The page is a single HTML file with no build step. Data and features come from the Artifact runtime (`window.claude.use(...)`):
+- [Vite](https://vite.dev) + React + TypeScript, deployed to GitHub Pages by `.github/workflows/deploy.yml` on every push to `main`.
+- [Supabase](https://supabase.com) for auth, the Postgres database, and photo storage. The schema and row level security policies are in `supabase/migrations/`.
 
-| Capability | Used for |
-| --- | --- |
-| `db` | Shared data in collections `people`, `checkins`, `cheers`, `days`, `commitments`, `recaps` |
-| `user` | Remembering which partner a viewer is |
-| `assets` | Progress photos (resized to a JPEG of at most 1400px before upload) |
-| `sample` | Writing the weekly recap with Claude |
+## Setup
 
-Outside claude.ai, the page renders but can't load or save any data.
+1. Create a Supabase project. In the **SQL Editor**, run `supabase/migrations/0001_init.sql`.
+2. In Supabase, go to **Authentication → URL Configuration** and set Site URL to `https://smithbraden277.github.io/habitkeeper/`.
+3. Put the project URL and anon key in `.env.production`:
+   ```
+   VITE_SUPABASE_URL=https://<project>.supabase.co
+   VITE_SUPABASE_ANON_KEY=<anon key>
+   ```
+   Both values are public by design. Access is enforced by the row level security policies, so never commit the `service_role` key.
+4. In GitHub, go to **Settings → Pages → Build and deployment** and set Source to **GitHub Actions**.
 
-## Sharing
+## Local development
 
-To let your partner save check-ins and upload photos, share the artifact with them **by email as an Editor**, and don't turn on a public link.
+```
+npm install
+cp .env.production .env.local   # or set your own project's values
+npm run dev
+```
 
 ## Roadmap
 
+- Claude weekly recap (through a Supabase Edge Function with an Anthropic API key)
 - Nudges when a partner is behind
-- A smoothed trend line for weight
-- A log for non-scale wins
+- A smoothed weight trend line
+- Non-scale wins log
 - Before/now photo compare
-- Celebrations and a team level
-- Longer term: food and workout logging
+- Celebrations and team levels
+- Food and workout logging
+
+`tracker/index.html` is the original claude.ai Artifact version, kept for reference.

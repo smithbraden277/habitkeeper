@@ -1,0 +1,15 @@
+{
+  "name": "habitkeeper",
+  "short_name": "habitkeeper",
+  "description": "Weekly weigh-ins, daily habits and commitments with your accountability partner.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#eef2f5",
+  "theme_color": "#0e8487",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
